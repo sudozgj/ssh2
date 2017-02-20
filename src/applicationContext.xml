@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+
+	<bean id="dataSource"
+		class="org.apache.commons.dbcp.BasicDataSource">
+		<property name="driverClassName" value="com.mysql.jdbc.Driver"></property>
+		<property name="url" value="jdbc:mysql://localhost:3306/oo?characterEncoding=UTF-8"></property>
+		<property name="username" value="root"></property>
+		<property name="password" value="123456"></property>
+	</bean>
+	
+	<bean id="sessionFactory"
+		class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
+		<property name="dataSource">
+			<ref bean="dataSource" />
+		</property>
+		<property name="hibernateProperties">
+			<props>
+				<prop key="hibernate.dialect">
+					org.hibernate.dialect.MySQLDialect
+				</prop>
+			</props>
+		</property>
+		<!-- 定义 POJO 的映射文件 -->
+		<property name="mappingResources">
+			<list>
+				<value>/org/model/User.hbm.xml</value>
+			</list>
+		</property>
+	</bean>
+	
+	<bean id="loginAction" class="org.action.LoginAction">
+		<property name="userService">		<!-- 在Action文件中要有对应的setter -->
+			<ref bean="userService" />		<!-- 在applicationContext.xml要有对应的bean的id -->
+		</property>
+	</bean>
+	
+	<bean id="userService" class="org.service.imp.UserServiceImp">
+		<property name="userDao">
+			<ref bean="userDao" />
+		</property>
+	</bean>
+	
+	<bean id="userDao" class="org.dao.imp.UserDaoImp">
+		<property name="sessionFactory">
+			<ref bean="sessionFactory" />
+		</property>
+	</bean>
+	
+	
+	
+	
+</beans>
